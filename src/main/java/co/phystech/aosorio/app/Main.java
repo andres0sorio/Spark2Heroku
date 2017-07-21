@@ -7,6 +7,7 @@ import java.io.IOException;
 import co.phystech.aosorio.controllers.DocGenerator;
 
 public class Main {
+	
     public static void main(String[] args) {
     	port(getHerokuAssignedPort());
         get("/hello", (req, res) -> "Hello World");
@@ -18,8 +19,6 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        
     }
     
     static int getHerokuAssignedPort() {
