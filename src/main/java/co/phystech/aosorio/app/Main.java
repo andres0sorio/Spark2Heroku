@@ -2,10 +2,24 @@ package co.phystech.aosorio.app;
 
 import static spark.Spark.*;
 
+import java.io.IOException;
+
+import co.phystech.aosorio.controllers.DocGenerator;
+
 public class Main {
     public static void main(String[] args) {
     	port(getHerokuAssignedPort());
         get("/hello", (req, res) -> "Hello World");
+        
+        DocGenerator docgen = new DocGenerator();
+        try {
+			docgen.generate();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        
     }
     
     static int getHerokuAssignedPort() {
