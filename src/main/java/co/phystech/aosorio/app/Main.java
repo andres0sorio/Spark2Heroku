@@ -5,7 +5,10 @@ import static spark.Spark.*;
 import java.io.IOException;
 
 import co.phystech.aosorio.config.CorsFilter;
+import co.phystech.aosorio.config.Routes;
 import co.phystech.aosorio.controllers.DocGenerator;
+import co.phystech.aosorio.controllers.FicheController;
+import co.phystech.aosorio.services.GeneralSvc;
 
 public class Main {
 	
@@ -16,6 +19,8 @@ public class Main {
     	CorsFilter.apply();
     	
         get("/hello", (req, res) -> "Hello World");
+        
+        post(Routes.FICHES, FicheController::createFicheDocx, GeneralSvc.json());
         
         DocGenerator docgen = new DocGenerator();
         try {
