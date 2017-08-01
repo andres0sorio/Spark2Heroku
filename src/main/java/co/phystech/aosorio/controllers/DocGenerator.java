@@ -3,21 +3,65 @@ package co.phystech.aosorio.controllers;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.xwpf.usermodel.Borders;
-import org.apache.poi.xwpf.usermodel.BreakClear;
-import org.apache.poi.xwpf.usermodel.BreakType;
 //import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.TextAlignment;
-import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
-import org.apache.poi.xwpf.usermodel.VerticalAlign;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
+import co.phystech.aosorio.models.Book;
+import co.phystech.aosorio.models.Comment;
+import co.phystech.aosorio.models.NewFichePayload;
+
 public class DocGenerator {
 	
+	private NewFichePayload fiche;
+	
+	/**
+	 * @param fiche
+	 */
+	
+	public DocGenerator() {
+		
+		this.fiche = new NewFichePayload();
+		Book book = new Book();
+		book.setTitle("My book title");
+		book.setSubTitle("A great book on computing");
+		book.setAuthor("McNabb, Andrew");
+		book.setYearPub(2017);
+		book.setEditor("Phystech Editions");
+		book.setCollection("Computing collection");
+		book.setPages(111);
+		book.setLanguage("English");
+		fiche.setBook(book);
+	
+		List<Comment> comments = new ArrayList<Comment>();
+		Comment comment = new Comment();
+		comment.setAboutAuthor("Great author");
+		comment.setAboutGenre("Nothing much special about this genre");
+		comment.setAboutCadre("New technologies, new authors");
+		comment.setResume("This book tells us a story about passion and computing");
+		comment.setExtrait("To be or not to be - ábéñ");
+		comment.setAppreciation("Love this book, good work by McNabb");
+		
+		comments.add(comment);
+		
+		fiche.setComments(comments);
+		
+	}
+	
+	public DocGenerator(NewFichePayload fiche) {
+		super();
+		this.fiche = fiche;
+	}
+
+
+
 	public void generate() throws IOException {
 		
 		XWPFDocument doc = new XWPFDocument();
@@ -26,90 +70,89 @@ public class DocGenerator {
         p1.setAlignment(ParagraphAlignment.CENTER);
         p1.setBorderBottom(Borders.DOUBLE);
         p1.setBorderTop(Borders.DOUBLE);
-
         p1.setBorderRight(Borders.DOUBLE);
         p1.setBorderLeft(Borders.DOUBLE);
-        p1.setBorderBetween(Borders.SINGLE);
-
-        p1.setVerticalAlignment(TextAlignment.TOP);
 
         XWPFRun r1 = p1.createRun();
         r1.setBold(true);
-        r1.setText("The quick brown fox");
-        r1.setBold(true);
-        r1.setFontFamily("Courier");
-        r1.setUnderline(UnderlinePatterns.DOT_DOT_DASH);
-        r1.setTextPosition(100);
+        r1.setFontSize(14);
+        r1.setText("Fiche de Lecture");
 
         XWPFParagraph p2 = doc.createParagraph();
-        p2.setAlignment(ParagraphAlignment.RIGHT);
-
-        //BORDERS
-        p2.setBorderBottom(Borders.DOUBLE);
-        p2.setBorderTop(Borders.DOUBLE);
-        p2.setBorderRight(Borders.DOUBLE);
-        p2.setBorderLeft(Borders.DOUBLE);
-        p2.setBorderBetween(Borders.SINGLE);
+        p2.setAlignment(ParagraphAlignment.LEFT);
 
         XWPFRun r2 = p2.createRun();
-        r2.setText("jumped over the lazy dog");
-        r2.setStrikeThrough(true);
-        r2.setFontSize(20);
 
-        XWPFRun r3 = p2.createRun();
-        r3.setText("and went away");
-        r3.setStrikeThrough(true);
-        r3.setFontSize(20);
-        r3.setSubscript(VerticalAlign.SUPERSCRIPT);
-
-
-        XWPFParagraph p3 = doc.createParagraph();
-        p3.setWordWrapped(true);
-        p3.setPageBreak(true);
-                
-        //p3.setAlignment(ParagraphAlignment.DISTRIBUTE);
-        p3.setAlignment(ParagraphAlignment.BOTH);
-        //p3.setSpacingBetween(15, LineSpacingRule.EXACT);
-
-        p3.setIndentationFirstLine(600);
+        r2.setFontSize(12);
         
-
-        XWPFRun r4 = p3.createRun();
-        r4.setTextPosition(20);
-        r4.setText("To be, or not to be: that is the question: "
-                + "Whether 'tis nobler in the mind to suffer "
-                + "The slings and arrows of outrageous fortune, "
-                + "Or to take arms against a sea of troubles, "
-                + "And by opposing end them? To die: to sleep; ");
-        r4.addBreak(BreakType.PAGE);
-        r4.setText("No more; and by a sleep to say we end "
-                + "The heart-ache and the thousand natural shocks "
-                + "That flesh is heir to, 'tis a consummation "
-                + "Devoutly to be wish'd. To die, to sleep; "
-                + "To sleep: perchance to dream: ay, there's the rub; "
-                + ".......");
-        r4.setItalic(true);
-//This would imply that this break shall be treated as a simple line break, and break the line after that word:
-
-        XWPFRun r5 = p3.createRun();
-        r5.setTextPosition(-10);
-        r5.setText("For in that sleep of death what dreams may come");
-        r5.addCarriageReturn();
-        r5.setText("When we have shuffled off this mortal coil,"
-                + "Must give us pause: there's the respect"
-                + "That makes calamity of so long life;");
-        r5.addBreak();
-        r5.setText("For who would bear the whips and scorns of time,"
-                + "The oppressor's wrong, the proud man's contumely,");
+        r2.setBold(true);        
+        r2.setText("Title: ");        
+        r2.setText(fiche.getBook().getTitle());
+        r2.addCarriageReturn();
         
-        r5.addBreak(BreakClear.ALL);
-        r5.setText("The pangs of despised love, the law's delay,"
-                + "The insolence of office and the spurns" + ".......");
+        r2.setText("Subtitle: " + fiche.getBook().getSubTitle());
+        r2.addCarriageReturn();
+
+        r2.setText("Authors: " + fiche.getBook().getAuthor());
+        r2.addCarriageReturn();
+        
+        r2.setText("Year: " + fiche.getBook().getYearPub());
+        r2.addCarriageReturn();
+
+        r2.setText("Editor: " + fiche.getBook().getEditor());
+        r2.addCarriageReturn();
+
+        r2.setText("Collection: " + fiche.getBook().getCollection());
+        r2.addCarriageReturn();
+
+        r2.setText("Pages: " + fiche.getBook().getPages());
+        r2.setText("Language: " + fiche.getBook().getLanguage());
+        r2.addCarriageReturn();
+
+        Iterator<Comment> itrComment = fiche.getComments().iterator();
+        
+        while(itrComment.hasNext()) {
+        	
+        	Comment comment = itrComment.next();
+        	      
+        	XWPFParagraph p3 = doc.createParagraph();
+            p3.setAlignment(ParagraphAlignment.LEFT);
+
+            XWPFRun r3 = p3.createRun();
+            r3.setFontSize(12);
+  
+            r3.setText("Author: " + comment.getAboutAuthor());
+            r3.addCarriageReturn();
+            
+        	r3.setText("Genre: ");
+        	r3.addCarriageReturn();
+        	
+        	r3.setText("Context: ");
+        	r3.addCarriageReturn();
+        	
+        	r3.setText("Characters: ");
+        	r3.addCarriageReturn();
+        	
+        	r3.setText("Resumé: ");
+        	r3.addCarriageReturn();
+        	
+        	r3.setText("Extraits: ");
+        	r3.addCarriageReturn();
+        	
+        	r3.setText("Appreciation: ");
+        	r3.addCarriageReturn();
+   	
+        	
+   
+        }
+        
+        
+        
 
         FileOutputStream out;
         
 		try {
-			out = new FileOutputStream("simple.docx");
+			out = new FileOutputStream("fiche.docx");
 			doc.write(out);
 			out.close();
 			doc.close();
