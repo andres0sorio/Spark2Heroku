@@ -8,6 +8,7 @@ import co.phystech.aosorio.config.CorsFilter;
 import co.phystech.aosorio.config.Routes;
 import co.phystech.aosorio.controllers.DocGenerator;
 import co.phystech.aosorio.controllers.FicheController;
+import co.phystech.aosorio.services.AuthorizeSvc;
 import co.phystech.aosorio.services.GeneralSvc;
 
 public class Main {
@@ -20,7 +21,11 @@ public class Main {
     	
         get("/hello", (req, res) -> "Hello World");
         
+        before(Routes.USERS + "*", AuthorizeSvc::authorizeUser);
+        
         post(Routes.FICHES, FicheController::createFicheDocx, GeneralSvc.json());
+        
+        get(Routes.FICHES, FicheController::getFicheDocx);
         
         DocGenerator docgen = new DocGenerator();
         try {

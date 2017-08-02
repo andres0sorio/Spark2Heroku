@@ -6,6 +6,12 @@ package co.phystech.aosorio.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +55,39 @@ public class FicheController {
 			return returnMessage.getNotOkMessage("Problem adding fiche");
 		}
 
+	}
+	
+	public static HttpServletResponse getFicheDocx(Request pRequest, Response pResponse) throws Exception {
+		
+		byte[] data = null;
+		try {
+			
+			Path path = Paths.get("./" + "fiche.docx");
+			try {
+				data = Files.readAllBytes(path);
+			} catch (IOException e) {
+				throw e;
+			}		
+		} catch ( NullPointerException e1 ) {
+			throw e1;
+		} catch ( InvalidPathException e2 ) {
+			throw e2;
+		}
+
+		HttpServletResponse raw = pResponse.raw();
+		pResponse.header("Content-Disposition", "attachment; filename=fiche.docx");
+		pResponse.type("application/force-download");
+		
+		try {
+			
+			raw.getOutputStream().write(data);
+			raw.getOutputStream().flush();
+			raw.getOutputStream().close();
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		return raw;
 	}
 
 }

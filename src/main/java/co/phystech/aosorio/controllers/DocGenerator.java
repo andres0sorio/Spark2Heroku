@@ -141,14 +141,9 @@ public class DocGenerator {
         	
         	r3.setText("Appreciation: ");
         	r3.addCarriageReturn();
-   	
-        	
-   
+   	  
         }
         
-        
-        
-
         FileOutputStream out;
         
 		try {
