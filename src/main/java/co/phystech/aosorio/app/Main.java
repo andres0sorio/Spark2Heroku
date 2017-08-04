@@ -21,7 +21,11 @@ public class Main {
     	
         get("/hello", (req, res) -> "Hello World");
         
+		// .. Authorization
+
         before(Routes.USERS + "*", AuthorizeSvc::authorizeUser);
+
+        // ... 
         
         post(Routes.FICHES, FicheController::createFicheDocx, GeneralSvc.json());
         
@@ -34,6 +38,20 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
+        options("/*", (request, response) -> {
+
+			String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+			if (accessControlRequestHeaders != null) {
+				response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+			}
+			String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+			if (accessControlRequestMethod != null) {
+				response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+			}
+			return "OK";
+		});
+        
     }
     
     static int getHerokuAssignedPort() {

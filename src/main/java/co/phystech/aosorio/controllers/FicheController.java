@@ -45,6 +45,8 @@ public class FicheController {
 			DocGenerator docxGen = new DocGenerator(inputFiche);
 			docxGen.generate();
 		
+			slf4jLogger.info(pRequest.body());
+			
 			pResponse.status(200);
 
 			return returnMessage.getOkMessage(String.valueOf(0));

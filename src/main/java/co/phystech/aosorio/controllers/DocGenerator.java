@@ -46,7 +46,7 @@ public class DocGenerator {
 		comment.setAboutGenre("Nothing much special about this genre");
 		comment.setAboutCadre("New technologies, new authors");
 		comment.setResume("This book tells us a story about passion and computing");
-		comment.setExtrait("To be or not to be - ábéñ");
+		comment.setExtrait("To be or not to be - Ã±");
 		comment.setAppreciation("Love this book, good work by McNabb");
 		
 		comments.add(comment);
@@ -133,7 +133,7 @@ public class DocGenerator {
         	r3.setText("Characters: ");
         	r3.addCarriageReturn();
         	
-        	r3.setText("Resumé: ");
+        	r3.setText("Resumï¿½: ");
         	r3.addCarriageReturn();
         	
         	r3.setText("Extraits: ");
