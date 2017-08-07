@@ -21,6 +21,7 @@ import co.phystech.aosorio.models.BackendMessage;
 import co.phystech.aosorio.models.NewFichePayload;
 import spark.Request;
 import spark.Response;
+import co.phystech.aosorio.services.GeneralSvc;
 
 /**
  * @author AOSORIO
@@ -44,49 +45,90 @@ public class FicheController {
 
 			DocGenerator docxGen = new DocGenerator(inputFiche);
 			docxGen.generate();
-		
+
 			slf4jLogger.info(pRequest.body());
-			
+
 			pResponse.status(200);
 
 			return returnMessage.getOkMessage(String.valueOf(0));
 
+		} catch (NullPointerException ex) {
+		
+			slf4jLogger.info("Problem adding fiche - incomplete fiche");
+			pResponse.status(Constants.HTTP_BAD_REQUEST);
+			return returnMessage.getNotOkMessage("Problem adding fiche");
+			
 		} catch (IOException jpe) {
-			slf4jLogger.debug("Problem adding fiche");
+		
+			slf4jLogger.info("Problem adding fiche");
 			pResponse.status(Constants.HTTP_BAD_REQUEST);
 			return returnMessage.getNotOkMessage("Problem adding fiche");
 		}
 
 	}
-	
-	public static HttpServletResponse getFicheDocx(Request pRequest, Response pResponse) throws Exception {
+
+	public static Object getFicheDocx(Request pRequest, Response pResponse) {
+
+		slf4jLogger.info(pRequest.headers().toString());
+
+		pResponse.type("application/json");
 		
+		BackendMessage response = new BackendMessage();
+
+		try {
+
+			slf4jLogger.info("Sending file");
+
+			Path path = Paths.get("./" + "fiche.docx");
+
+			String docx64Encoded = GeneralSvc.convertFileToString(path.toFile());
+
+			return response.getOkMessage(docx64Encoded);
+
+		} catch (NullPointerException e1) {
+			e1.printStackTrace();	
+		} catch (InvalidPathException e2) {
+			e2.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return response.getNotOkMessage("File not generated");
+		
+	}
+
+	public static Object getFicheRaw(Request pRequest, Response pResponse) throws Exception {
+
+		slf4jLogger.info(pRequest.headers().toString());
+
 		byte[] data = null;
 		try {
-			
+
 			Path path = Paths.get("./" + "fiche.docx");
 			try {
 				data = Files.readAllBytes(path);
 			} catch (IOException e) {
 				throw e;
-			}		
-		} catch ( NullPointerException e1 ) {
+			}
+		} catch (NullPointerException e1) {
 			throw e1;
-		} catch ( InvalidPathException e2 ) {
+		} catch (InvalidPathException e2) {
 			throw e2;
 		}
 
 		HttpServletResponse raw = pResponse.raw();
+		pResponse.type("application/octet-stream");
 		pResponse.header("Content-Disposition", "attachment; filename=fiche.docx");
-		pResponse.type("application/force-download");
-		
+		pResponse.header("Access-Control-Allow-Origin", "*");
+
 		try {
-			
+
 			raw.getOutputStream().write(data);
 			raw.getOutputStream().flush();
 			raw.getOutputStream().close();
+
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 		}
 		return raw;

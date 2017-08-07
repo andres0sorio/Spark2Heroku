@@ -6,6 +6,8 @@ package co.phystech.aosorio.models;
 import java.util.Date;
 import java.util.UUID;
 
+import co.phystech.aosorio.config.Constants;
+
 /**
  * @author AOSORIO
  *
@@ -45,6 +47,7 @@ public class Comment {
 	}
 
 	public String getAuthor() {
+		if( author.isEmpty()) return Constants.EMPTY_FIELD;
 		return author;
 	}
 
@@ -53,6 +56,7 @@ public class Comment {
 	}
 
 	public String getAboutAuthor() {
+		if( aboutAuthor.isEmpty()) return Constants.EMPTY_FIELD;
 		return aboutAuthor;
 	}
 
@@ -61,6 +65,7 @@ public class Comment {
 	}
 
 	public String getAboutGenre() {
+		if( aboutGenre.isEmpty()) return Constants.EMPTY_FIELD;
 		return aboutGenre;
 	}
 
@@ -69,6 +74,7 @@ public class Comment {
 	}
 
 	public String getAboutCadre() {
+		if( aboutCadre.isEmpty()) return Constants.EMPTY_FIELD;
 		return aboutCadre;
 	}
 
@@ -77,6 +83,7 @@ public class Comment {
 	}
 
 	public String getAboutCharacters() {
+		if( aboutCharacters.isEmpty()) return Constants.EMPTY_FIELD;
 		return aboutCharacters;
 	}
 
@@ -85,6 +92,7 @@ public class Comment {
 	}
 
 	public String getResume() {
+		if( resume.isEmpty()) return Constants.EMPTY_FIELD;
 		return resume;
 	}
 
@@ -93,6 +101,7 @@ public class Comment {
 	}
 
 	public String getExtrait() {
+		if( extrait.isEmpty()) return Constants.EMPTY_FIELD;
 		return extrait;
 	}
 
@@ -101,6 +110,7 @@ public class Comment {
 	}
 
 	public String getAppreciation() {
+		if( appreciation.isEmpty()) return Constants.EMPTY_FIELD;
 		return appreciation;
 	}
 

@@ -16,4 +16,6 @@ public class Constants {
 	
 	public static final String LOGIN_SERVICE = "https://rugged-yosemite-61189.herokuapp.com/";
 	
+	public static final String EMPTY_FIELD = "Please don't forget to fill in this field";
+	
 }

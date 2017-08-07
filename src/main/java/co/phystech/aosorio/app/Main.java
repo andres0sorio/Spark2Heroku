@@ -12,34 +12,37 @@ import co.phystech.aosorio.services.AuthorizeSvc;
 import co.phystech.aosorio.services.GeneralSvc;
 
 public class Main {
-	
-    public static void main(String[] args) {
-    	
-    	port(getHerokuAssignedPort());
-    	
-    	CorsFilter.apply();
-    	
-        get("/hello", (req, res) -> "Hello World");
-        
+
+	public static void main(String[] args) {
+
+		port(getHerokuAssignedPort());
+
+		CorsFilter.apply();
+
+		get("/hello", (req, res) -> "Hello World");
+
 		// .. Authorization
+		if (args.length == 0)
+			before(Routes.USERS + "*", AuthorizeSvc::authorizeUser);
 
-        before(Routes.USERS + "*", AuthorizeSvc::authorizeUser);
+		// ...
 
-        // ... 
-        
-        post(Routes.FICHES, FicheController::createFicheDocx, GeneralSvc.json());
-        
-        get(Routes.FICHES, FicheController::getFicheDocx);
-        
-        DocGenerator docgen = new DocGenerator();
-        try {
-			docgen.generate();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		post(Routes.FICHES, FicheController::createFicheDocx, GeneralSvc.json());
+
+		get(Routes.FICHES, FicheController::getFicheDocx, GeneralSvc.json());
+
+		get(Routes.FICHESRAW, FicheController::getFicheRaw);
+
+		if (args.length != 0) {
+			DocGenerator docgen = new DocGenerator();
+			try {
+				docgen.generate();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-        
-        options("/*", (request, response) -> {
+
+		options("/*", (request, response) -> {
 
 			String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
 			if (accessControlRequestHeaders != null) {
@@ -51,15 +54,15 @@ public class Main {
 			}
 			return "OK";
 		});
-        
-    }
-    
-    static int getHerokuAssignedPort() {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        if (processBuilder.environment().get("PORT") != null) {
-            return Integer.parseInt(processBuilder.environment().get("PORT"));
-        }
-        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
-    }
+
+	}
+
+	static int getHerokuAssignedPort() {
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		if (processBuilder.environment().get("PORT") != null) {
+			return Integer.parseInt(processBuilder.environment().get("PORT"));
+		}
+		return 4567;
+	}
 
 }

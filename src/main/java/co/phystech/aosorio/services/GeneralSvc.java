@@ -3,8 +3,11 @@
  */
 package co.phystech.aosorio.services;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.util.Base64;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,4 +36,9 @@ public class GeneralSvc {
 		return GeneralSvc::dataToJson;
 	}
 
+	public static String convertFileToString(File file) throws IOException{
+        byte[] bytes = Files.readAllBytes(file.toPath());   
+        return new String(Base64.getEncoder().encode(bytes));
+    }
+	
 }
