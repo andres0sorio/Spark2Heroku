@@ -69,7 +69,7 @@ public class DocGenerator {
 		comment.setAboutGenre("Nothing much special about this genre");
 		comment.setAboutCadre("New technologies, new authors");
 		comment.setResume("This book tells us a story about passion and computing");
-		comment.setExtrait("To be or not to be - ñ");
+		comment.setExtrait("To be or not to be - \uc3b1");
 		comment.setAppreciation("Love this book, good work by McNabb");
 
 		comments.add(comment);
