@@ -1,6 +1,5 @@
 package co.phystech.aosorio.app;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -28,8 +27,7 @@ public class TestMethods {
 					"class loader for this class: " + TestMethods.class.getClassLoader().getResource("MyLabels_en_US.properties"));
 			
 			input = TestMethods.class.getClassLoader().getResource("MyLabels_en_US.properties").openStream();
-			
-			//input = new FileInputStream("MyLabels_en_US.properties");
+
 			prop.load(input);
 						
 			slf4jLogger.info( prop.getProperty("how_are_you") );

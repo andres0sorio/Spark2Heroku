@@ -27,7 +27,7 @@ public class Main {
 					slf4jLogger.info(file.getName());
 				}
 			}
-			slf4jLogger.info("Gresat work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			slf4jLogger.info("Gresat work!");
 
 		} catch (Exception e) {
 			e.printStackTrace();
