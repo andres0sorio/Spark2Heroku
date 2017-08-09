@@ -3,10 +3,14 @@ package co.phystech.aosorio.controllers;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
@@ -37,7 +41,10 @@ public class DocGenerator {
 	private final static Logger slf4jLogger = LoggerFactory.getLogger(DocGenerator.class);
 
 	private NewFichePayload fiche;
-
+	
+	private String cfg_language;
+	private String cfg_country;
+	
 	private static XWPFParagraph[] parsHeader;
 	private static XWPFParagraph[] parsFooter;
 
@@ -75,16 +82,23 @@ public class DocGenerator {
 		comments.add(comment);
 
 		fiche.setComments(comments);
+		
+		CfgController();
 
 	}
 
 	public DocGenerator(NewFichePayload fiche) {
 		super();
 		this.fiche = fiche;
+		
+		CfgController();
 	}
 
 	public void generate() throws IOException {
 
+		Locale.setDefault(new Locale(cfg_language, cfg_country));
+		ResourceBundle language = ResourceBundle.getBundle("DocLabels");
+		
 		XWPFDocument doc = new XWPFDocument();
 
 		parsHeader = new XWPFParagraph[1];
@@ -100,7 +114,7 @@ public class DocGenerator {
 
 		ctP = CTP.Factory.newInstance();
 		t = ctP.addNewR().addNewT();
-		t.setStringValue("Phystech | Date: " + new Date().toString());
+		t.setStringValue(language.getString("footer_date") + " " + new Date().toString());
 
 		// ...Page number
 		CTP ctpHeaderPage = CTP.Factory.newInstance();
@@ -137,34 +151,34 @@ public class DocGenerator {
 		XWPFRun r1 = p1.createRun();
 		r1.setBold(true);
 		r1.setFontSize(14);
-		r1.setText("Fiche de Lecture");
+		r1.setText(language.getString("fiche_de_lecture"));
 		r1.addCarriageReturn();
 		
 		XWPFParagraph p2 = doc.createParagraph();
 		p2.setAlignment(ParagraphAlignment.LEFT);
 
-		setBookParagraph(p2, "Title: ", fiche.getBook().getTitle());
+		setBookParagraph(p2, language.getString("title"), fiche.getBook().getTitle());
 		
 		p2 = doc.createParagraph();
-		setBookParagraph(p2, "Subtitle: ", fiche.getBook().getSubTitle());
+		setBookParagraph(p2, language.getString("subtitle"), fiche.getBook().getSubTitle());
 
 		p2 = doc.createParagraph();
-		setBookParagraph(p2, "Authors: ", fiche.getBook().getAuthor());
+		setBookParagraph(p2, language.getString("author"), fiche.getBook().getAuthor());
 		
 		p2 = doc.createParagraph();
-		setBookParagraph(p2, "Year: ", String.valueOf(fiche.getBook().getYearPub()));
+		setBookParagraph(p2, language.getString("year"), String.valueOf(fiche.getBook().getYearPub()));
 		
 		p2 = doc.createParagraph();
-		setBookParagraph(p2, "Editor: ", fiche.getBook().getEditor());
+		setBookParagraph(p2, language.getString("editor"), fiche.getBook().getEditor());
 		
 		p2 = doc.createParagraph();
-		setBookParagraph(p2, "Collection: ", fiche.getBook().getCollection());
+		setBookParagraph(p2, language.getString("collection"), fiche.getBook().getCollection());
 
 		p2 = doc.createParagraph();
-		setBookParagraph(p2, "Pages: ", String.valueOf(fiche.getBook().getPages()));
+		setBookParagraph(p2, language.getString("pages"), String.valueOf(fiche.getBook().getPages()));
 		
 		p2 = doc.createParagraph();
-		setBookParagraph(p2, "Language: ", fiche.getBook().getLanguage());
+		setBookParagraph(p2, language.getString("language"), fiche.getBook().getLanguage());
 
 		Iterator<Comment> itrComment = fiche.getComments().iterator();
 
@@ -183,28 +197,28 @@ public class DocGenerator {
 				XWPFParagraph p4 = doc.createParagraph();
 				p4.setBorderTop(Borders.SINGLE);
 				p4.setBorderBottom(Borders.SINGLE);
-				setParagraph(p4, "Reviewed by: ", comment.getAuthor());
+				setParagraph(p4, language.getString("reviewed"), comment.getAuthor());
 
 				p4 = doc.createParagraph();
-				setParagraph(p4, "About the author: ", comment.getAboutAuthor());
+				setParagraph(p4, language.getString("about_author"), comment.getAboutAuthor());
 
 				p4 = doc.createParagraph();
-				setParagraph(p4, "Genre: ", comment.getAboutGenre());
+				setParagraph(p4, language.getString("about_genre"), comment.getAboutGenre());
 
 				p4 = doc.createParagraph();
-				setParagraph(p4, "About the context: ", comment.getAboutCadre());
+				setParagraph(p4, language.getString("about_context"), comment.getAboutCadre());
 
 				p4 = doc.createParagraph();
-				setParagraph(p4, "About the characters: ", comment.getAboutCharacters());
+				setParagraph(p4, language.getString("about_characters"), comment.getAboutCharacters());
 
 				p4 = doc.createParagraph();
-				setParagraph(p4, "Summary: ", comment.getResume());
+				setParagraph(p4, language.getString("summary"), comment.getResume());
 
 				p4 = doc.createParagraph();
-				setParagraph(p4, "Extraits: ", comment.getExtrait());
+				setParagraph(p4, language.getString("extraits"), comment.getExtrait());
 
 				p4 = doc.createParagraph();
-				setParagraph(p4, "Appreciation: ", comment.getAppreciation());
+				setParagraph(p4, language.getString("appreciation"), comment.getAppreciation());
 
 			} catch (NullPointerException ex) {
 
@@ -261,6 +275,36 @@ public class DocGenerator {
 		r3.setText(pContent);
 		r3.addCarriageReturn();
 
+	}
+	
+	private void CfgController() {
+
+		Properties prop = new Properties();
+		InputStream input = null;
+
+		try {
+
+			input = DocGenerator.class.getClassLoader().getResource("system.properties").openStream();
+			prop.load(input);
+
+			// get the property value and print it out
+			cfg_language = prop.getProperty("locale.language");
+			cfg_country = prop.getProperty("locale.country");
+			
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			cfg_language = "en";
+			cfg_country = "US";
+			
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }
