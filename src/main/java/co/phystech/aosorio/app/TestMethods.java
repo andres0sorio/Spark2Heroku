@@ -1,8 +1,8 @@
 package co.phystech.aosorio.app;
 
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -20,14 +20,18 @@ public class TestMethods {
 		pResponse.type("application/json");
 		
 		Properties prop = new Properties();
-		OutputStream output = null;
-		
+		InputStream input = null;
+				
 		try {
 			
 			System.out.println(
 					"class loader for this class: " + TestMethods.class.getClassLoader().getResource("MyLabels_en_US.properties"));
 			
-			output = new FileOutputStream("MyLabels_en_US.properties");
+			input = TestMethods.class.getClassLoader().getResource("MyLabels_en_US.properties").openStream();
+			
+			//input = new FileInputStream("MyLabels_en_US.properties");
+			prop.load(input);
+						
 			slf4jLogger.info( prop.getProperty("how_are_you") );
 			
 			pResponse.status(200);
@@ -38,9 +42,9 @@ public class TestMethods {
 			pResponse.status(404);
 			return "NOTOK";
 		} finally {
-			if (output != null) {
+			if (input != null) {
 				try {
-					output.close();
+					input.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 					pResponse.status(404);
