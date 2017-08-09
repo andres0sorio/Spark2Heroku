@@ -1,6 +1,7 @@
 package co.phystech.aosorio.app;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.port;
 
 import java.io.File;
 
@@ -33,15 +34,15 @@ public class Main {
 			slf4jLogger.info("Problem extracting Properties file");
 		}
 
-		System.out.println("class loader for HashMap: "
-				+ java.util.HashMap.class.getClassLoader());
+		System.out.println("class loader for HashMap: " + java.util.HashMap.class.getClassLoader());
 
-		System.out.println("class loader for this class: "
-				+ Main.class.getClassLoader());
+		System.out.println("class loader for this class: " + Main.class.getClassLoader());
 
-		System.out.println("class loader for this class: "
-				+ Main.class.getClassLoader().getResource("MyLabels_en_US.properties"));
-		
+		System.out.println(
+				"class loader for this class: " + Main.class.getClassLoader().getResource("MyLabels_en_US.properties"));
+
+		get("/properties", TestMethods::getProperties);
+
 		slf4jLogger.info("Program is working fine");
 
 	}
