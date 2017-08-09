@@ -33,6 +33,13 @@ public class Main {
 			slf4jLogger.info("Problem extracting Properties file");
 		}
 
+		System.out.println("class loader for HashMap: "
+				+ java.util.HashMap.class.getClassLoader());
+
+		System.out.println("class loader for this class: "
+				+ Main.class.getClassLoader());
+
+		
 		slf4jLogger.info("Program is working fine");
 
 	}
