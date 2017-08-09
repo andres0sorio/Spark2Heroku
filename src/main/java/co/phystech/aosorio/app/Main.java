@@ -39,6 +39,8 @@ public class Main {
 		System.out.println("class loader for this class: "
 				+ Main.class.getClassLoader());
 
+		System.out.println("class loader for this class: "
+				+ Main.class.getClassLoader().getResource("MyLabels_en_US.properties"));
 		
 		slf4jLogger.info("Program is working fine");
 
