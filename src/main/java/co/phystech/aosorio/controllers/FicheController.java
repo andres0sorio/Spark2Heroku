@@ -42,8 +42,11 @@ public class FicheController {
 			ObjectMapper mapper = new ObjectMapper();
 
 			NewFichePayload inputFiche = mapper.readValue(pRequest.body(), NewFichePayload.class);
-
-			DocGenerator docxGen = new DocGenerator(inputFiche);
+		
+			String ficheUrl = pRequest.headers("Referer");
+			slf4jLogger.info(ficheUrl);
+					
+			DocGenerator docxGen = new DocGenerator(inputFiche,ficheUrl);
 			docxGen.generate();
 
 			slf4jLogger.info(pRequest.body());

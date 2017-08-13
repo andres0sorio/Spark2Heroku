@@ -47,7 +47,7 @@ public class DocGenerator {
 	private final static Logger slf4jLogger = LoggerFactory.getLogger(DocGenerator.class);
 
 	private NewFichePayload fiche;
-	
+	private String ficheUrl;
 	private String cfg_language;
 	private String cfg_country;
 	
@@ -62,6 +62,7 @@ public class DocGenerator {
 		this.fiche = new NewFichePayload();
 		Book book = new Book();
 		UUID bookUuid = UUID.fromString("cad346bd-0fd6-49d6-a633-67d6537c4bdd");
+		this.ficheUrl = UUID.fromString("cad346bd-0fd6-49d6-a633-67d6537c4bdd").toString();
 		book.setBook_uuid(bookUuid);
 		book.setTitle("My book title");
 		book.setSubTitle("A great book on computing");
@@ -92,9 +93,10 @@ public class DocGenerator {
 
 	}
 
-	public DocGenerator(NewFichePayload fiche) {
+	public DocGenerator(NewFichePayload fiche, String ficheUrl) {
 		super();
 		this.fiche = fiche;
+		this.ficheUrl = ficheUrl;
 		
 		CfgController();
 	}
@@ -120,7 +122,8 @@ public class DocGenerator {
 
 		try {
 			
-			QRCodeGenerator.generate(this.fiche.getBook().getBook_uuid().toString());
+			//QRCodeGenerator.generate(this.fiche.getBook().getBook_uuid().toString());
+			QRCodeGenerator.generate( this.ficheUrl );
 			String imgFile = "qr.png";
 			InputStream pngFile = new FileInputStream(imgFile);
 			paragraph.createRun().addPicture(pngFile, XWPFDocument.PICTURE_TYPE_PNG, imgFile, Units.toEMU(60), Units.toEMU(60));
