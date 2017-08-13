@@ -1,4 +1,6 @@
 *.iml
+*.png
+*.pdf
 .idea
 target
 .classpath

@@ -1,5 +1,6 @@
 package co.phystech.aosorio.controllers;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,11 +14,14 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.Borders;
 //import org.apache.poi.xwpf.usermodel.LineSpacingRule;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTFldChar;
@@ -32,6 +36,8 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.zxing.WriterException;
+
 import co.phystech.aosorio.models.Book;
 import co.phystech.aosorio.models.Comment;
 import co.phystech.aosorio.models.NewFichePayload;
@@ -45,7 +51,6 @@ public class DocGenerator {
 	private String cfg_language;
 	private String cfg_country;
 	
-	private static XWPFParagraph[] parsHeader;
 	private static XWPFParagraph[] parsFooter;
 
 	/**
@@ -101,19 +106,36 @@ public class DocGenerator {
 		
 		XWPFDocument doc = new XWPFDocument();
 
-		parsHeader = new XWPFParagraph[1];
+		// ..Header
+		
+		XWPFHeaderFooterPolicy headerFooterPolicy = doc.getHeaderFooterPolicy();
+		if (headerFooterPolicy == null) headerFooterPolicy = doc.createHeaderFooterPolicy();
 
-		// ..Header & Footer
+		//... Create header
+		
+		XWPFHeader header = headerFooterPolicy.createHeader(XWPFHeaderFooterPolicy.DEFAULT);
+		XWPFParagraph paragraph = doc.createParagraph();
+		paragraph = header.createParagraph();
+		paragraph.setAlignment(ParagraphAlignment.LEFT);
+
+		try {
+			
+			QRCodeGenerator.generate(this.fiche.getBook().getBook_uuid().toString());
+			String imgFile = "qr.png";
+			InputStream pngFile = new FileInputStream(imgFile);
+			paragraph.createRun().addPicture(pngFile, XWPFDocument.PICTURE_TYPE_PNG, imgFile, Units.toEMU(60), Units.toEMU(60));
+			pngFile.close();
+		
+		} catch (WriterException | InvalidFormatException e1) {
+			XWPFRun run = paragraph.createRun();  
+			run.setText("[Fiche UUID]");
+			slf4jLogger.debug(e1.getLocalizedMessage());
+		}
+		
+		//... Footer
+		
 		CTP ctP = CTP.Factory.newInstance();
 		CTText t = ctP.addNewR().addNewT();
-		t.setStringValue("Fiche UUID: " + this.fiche.getBook().getBook_uuid().toString());
-		parsHeader[0] = new XWPFParagraph(ctP, doc);
-
-		XWPFHeaderFooterPolicy hfPolicy = doc.createHeaderFooterPolicy();
-		hfPolicy.createHeader(XWPFHeaderFooterPolicy.DEFAULT, parsHeader);
-
-		ctP = CTP.Factory.newInstance();
-		t = ctP.addNewR().addNewT();
 		t.setStringValue(language.getString("footer_date") + " " + new Date().toString());
 
 		// ...Page number
@@ -139,6 +161,7 @@ public class DocGenerator {
 		parsFooter[0].setBorderTop(Borders.SINGLE);
 		parsFooter[1] = new XWPFParagraph(ctpHeaderPage, doc);
 
+		XWPFHeaderFooterPolicy hfPolicy = doc.createHeaderFooterPolicy();
 		hfPolicy.createFooter(XWPFHeaderFooterPolicy.DEFAULT, parsFooter);
 
 		// ...
