@@ -3,10 +3,8 @@
  */
 package co.phystech.aosorio.models;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
-
-import co.phystech.aosorio.config.Constants;
 
 /**
  * @author AOSORIO
@@ -27,9 +25,14 @@ public class Comment {
 	private String appreciation;
 	
 	private boolean isCompleted;
-	private Date submission_date;
-	private Date completion_date;
+	private Timestamp submission_date;
+	private Timestamp completion_date;
 
+	private String optional_one;
+	private String optional_two;
+	private String optional_three;
+	private String optional_four;
+	
 	public UUID getComment_uuid() {
 		return comment_uuid;
 	}
@@ -47,7 +50,6 @@ public class Comment {
 	}
 
 	public String getAuthor() {
-		if( author.isEmpty()) return Constants.EMPTY_FIELD;
 		return author;
 	}
 
@@ -56,7 +58,6 @@ public class Comment {
 	}
 
 	public String getAboutAuthor() {
-		if( aboutAuthor.isEmpty()) return Constants.EMPTY_FIELD;
 		return aboutAuthor;
 	}
 
@@ -65,7 +66,6 @@ public class Comment {
 	}
 
 	public String getAboutGenre() {
-		if( aboutGenre.isEmpty()) return Constants.EMPTY_FIELD;
 		return aboutGenre;
 	}
 
@@ -74,7 +74,6 @@ public class Comment {
 	}
 
 	public String getAboutCadre() {
-		if( aboutCadre.isEmpty()) return Constants.EMPTY_FIELD;
 		return aboutCadre;
 	}
 
@@ -83,7 +82,6 @@ public class Comment {
 	}
 
 	public String getAboutCharacters() {
-		if( aboutCharacters.isEmpty()) return Constants.EMPTY_FIELD;
 		return aboutCharacters;
 	}
 
@@ -92,7 +90,6 @@ public class Comment {
 	}
 
 	public String getResume() {
-		if( resume.isEmpty()) return Constants.EMPTY_FIELD;
 		return resume;
 	}
 
@@ -101,7 +98,6 @@ public class Comment {
 	}
 
 	public String getExtrait() {
-		if( extrait.isEmpty()) return Constants.EMPTY_FIELD;
 		return extrait;
 	}
 
@@ -110,7 +106,6 @@ public class Comment {
 	}
 
 	public String getAppreciation() {
-		if( appreciation.isEmpty()) return Constants.EMPTY_FIELD;
 		return appreciation;
 	}
 
@@ -118,11 +113,11 @@ public class Comment {
 		this.appreciation = appreciation;
 	}
 
-	public Date getSubmission_date() {
+	public Timestamp getSubmission_date() {
 		return submission_date;
 	}
 
-	public void setSubmission_date(Date submission_date) {
+	public void setSubmission_date(Timestamp submission_date) {
 		this.submission_date = submission_date;
 	}
 
@@ -143,15 +138,71 @@ public class Comment {
 	/**
 	 * @return the completion_date
 	 */
-	public Date getCompletion_date() {
+	public Timestamp getCompletion_date() {
 		return completion_date;
 	}
 
 	/**
 	 * @param completion_date the completion_date to set
 	 */
-	public void setCompletion_date(Date completion_date) {
+	public void setCompletion_date(Timestamp completion_date) {
 		this.completion_date = completion_date;
+	}
+
+	/**
+	 * @return the optional_one
+	 */
+	public String getOptional_one() {
+		return optional_one;
+	}
+
+	/**
+	 * @param optional_one the optional_one to set
+	 */
+	public void setOptional_one(String optional_one) {
+		this.optional_one = optional_one;
+	}
+
+	/**
+	 * @return the optional_two
+	 */
+	public String getOptional_two() {
+		return optional_two;
+	}
+
+	/**
+	 * @param optional_two the optional_two to set
+	 */
+	public void setOptional_two(String optional_two) {
+		this.optional_two = optional_two;
+	}
+
+	/**
+	 * @return the optional_three
+	 */
+	public String getOptional_three() {
+		return optional_three;
+	}
+
+	/**
+	 * @param optional_three the optional_three to set
+	 */
+	public void setOptional_three(String optional_three) {
+		this.optional_three = optional_three;
+	}
+
+	/**
+	 * @return the optional_four
+	 */
+	public String getOptional_four() {
+		return optional_four;
+	}
+
+	/**
+	 * @param optional_four the optional_four to set
+	 */
+	public void setOptional_four(String optional_four) {
+		this.optional_four = optional_four;
 	}
 	
 	
