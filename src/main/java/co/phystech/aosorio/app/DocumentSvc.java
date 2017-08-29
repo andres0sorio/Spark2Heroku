@@ -34,9 +34,7 @@ import spark.Response;
 public class DocumentSvc {
 
 	static Logger logger = LogManager.getRootLogger();
-	
-	
-	
+		
 	public static Object uploadFile(Request pRequest, Response pResponse) {
 
 		File uploadDir = null;
@@ -50,13 +48,13 @@ public class DocumentSvc {
 
 		} catch (Exception e) {
 	
-			uploadDir = new File(LOCAL_TMP_DEFAULT);
+			uploadDir = new File(GeneralSvc.LOCAL_TMP_PATH);
 			uploadDir.mkdir();
 			logger.info("LOCAL_TMP_PATH set to default value");
 			logger.error(e.getMessage());
 		}
 		
-		pRequest.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement(""));
+		pRequest.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement(GeneralSvc.LOCAL_TMP_PATH));
 
 		try {
 

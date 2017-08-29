@@ -76,6 +76,7 @@ public class GeneralSvc {
 		}
 
 		if (!found) {
+			LOCAL_TMP_PATH = LOCAL_TMP_DEFAULT;
 			throw new Exception("LOCAL_TMP_PATH_ENV not defined!");
 		}
 
