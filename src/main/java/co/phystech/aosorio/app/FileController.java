@@ -10,7 +10,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -24,14 +26,14 @@ import spark.Response;
 
 /**
  * Package: co.phystech.aosorio.app
- * Class: DocumentSvc DocumentSvc.java
+ * Class: FileController FileController.java
  * Original Author: @author AOSORIO
  * Description: Class implementing the document/file service
  * Implementation:
  * Created: 28/08/2017
  */
 
-public class DocumentSvc {
+public class FileController {
 
 	static Logger logger = LogManager.getRootLogger();
 		
@@ -39,6 +41,8 @@ public class DocumentSvc {
 
 		File uploadDir = null;
 		long timestamp = System.currentTimeMillis();
+		
+		pResponse.header("Access-Control-Allow-Origin", "*");
 		
 		try {
 	
@@ -76,43 +80,45 @@ public class DocumentSvc {
 			Path tempFile = Files.createTempFile(uploadDir.toPath(), String.valueOf(timestamp), fileExt);
 
 			Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
-
+			
+			logger.info(tempFile.toString());
+			
 		} catch (IOException | ServletException e) {
 			e.printStackTrace();
+			return "NOTOK";
 		}
 		
 		return "OK";
 
 	}
 
-	/*
-	public String listDocuments() {
+	
+	public static Object listFiles(Request pRequest, Response pResponse) {
 
-		String allFiles = "";
-
+		ArrayList<String> files;
+		
+		pResponse.header("Access-Control-Allow-Origin", "*");
+		
 		try {
 
 			GeneralSvc.configTmpDir();
-			ArrayList<String> files = GeneralSvc.listDownloadedFiles(GeneralSvc.LOCAL_TMP_PATH);
+			files = GeneralSvc.listDownloadedFiles(GeneralSvc.LOCAL_TMP_PATH);
 			Iterator<String> itrFiles = files.iterator();
-			allFiles += "[";
-
+			
 			while (itrFiles.hasNext()) {
-				String jsonStr = "{\"file" + "\": \"" + itrFiles.next().replace("\\", "/") + "\"}";
-				JsonParser parser = new JsonParser();
-				JsonObject obj = parser.parse(jsonStr).getAsJsonObject();
-				allFiles += obj.toString() + ",";
+				
+				String fileName = itrFiles.next();
+				logger.info(fileName);
 			}
-			allFiles = GeneralSvc.removeLastChar(allFiles) + "]";
-
+			
 		} catch (Exception e) {
-			allFiles = "[{}]";
 			e.printStackTrace();
+			return "NOTOK";		
 		}
 
-		return allFiles;
+		return files;
 
-	} */
+	} 
 	
 
 }

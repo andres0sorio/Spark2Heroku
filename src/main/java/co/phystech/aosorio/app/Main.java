@@ -19,8 +19,10 @@ public class Main {
 
 		slf4jLogger.info("Program is working fine");
 		
-		post("/fileupload/", DocumentSvc::uploadFile, GeneralSvc.json());
-
+		post("/fileupload/", FileController::uploadFile, GeneralSvc.json());
+		
+		get("/listfiles/", FileController::listFiles,GeneralSvc.json());
+		
 	}
 
 	static int getHerokuAssignedPort() {
